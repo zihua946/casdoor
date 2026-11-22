@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/casdoor/casdoor/util"
@@ -127,7 +128,9 @@ func RegisterDynamicClient(req *DynamicClientRegistrationRequest, organization s
 	var inheritedLogo, inheritedFooterHtml, inheritedFormCss string
 	var inheritedThemeData *ThemeData
 	var inheritedSigninItems []*SigninItem
-	var inheritedEnableSigninSession, inheritedEnableWebAuthn bool
+	var inheritedEnableSigninSession, inheritedEnableWebAuthn, inheritedEnableAutoSignin bool
+	var inheritedTags []string
+	var inheritedCert string
 	defaultApp, err := GetDefaultApplication(util.GetId("admin", organization))
 	if err == nil && defaultApp != nil {
 		inheritedProviders = defaultApp.Providers
@@ -139,6 +142,14 @@ func RegisterDynamicClient(req *DynamicClientRegistrationRequest, organization s
 		inheritedSigninItems = defaultApp.SigninItems
 		inheritedEnableSigninSession = defaultApp.EnableSigninSession
 		inheritedEnableWebAuthn = defaultApp.EnableWebAuthn
+		inheritedEnableAutoSignin = defaultApp.EnableAutoSignin
+		inheritedTags = defaultApp.Tags
+		inheritedCert = defaultApp.Cert
+	}
+
+	var scopes []*ScopeItem
+	for _, name := range strings.Fields(req.Scope) {
+		scopes = append(scopes, &ScopeItem{Name: name, DisplayName: name})
 	}
 
 	// Create Application object
@@ -150,37 +161,39 @@ func RegisterDynamicClient(req *DynamicClientRegistrationRequest, organization s
 	createdTime := util.GetCurrentTime()
 
 	application := &Application{
-		Owner:                   "admin",
-		Name:                    appName,
-		Organization:            organization,
-		CreatedTime:             createdTime,
-		DisplayName:             req.ClientName,
-		Category:                "Agent",
-		Type:                    "MCP",
-		Scopes:                  []*ScopeItem{},
-		Logo:                    firstNonEmpty(req.LogoUri, inheritedLogo),
-		ThemeData:               inheritedThemeData,
-		FooterHtml:              inheritedFooterHtml,
-		FormCss:                 inheritedFormCss,
-		SigninItems:             inheritedSigninItems,
-		HomepageUrl:             req.ClientUri,
-		ClientId:                clientId,
-		ClientSecret:            clientSecret,
-		RedirectUris:            req.RedirectUris,
-		GrantTypes:              req.GrantTypes,
-		EnablePassword:          true,
-		EnableSignUp:            false,
-		DisableSignin:           false,
-		EnableSigninSession:     inheritedEnableSigninSession,
-		EnableCodeSignin:        true,
-		EnableAutoSignin:        false,
-		EnableWebAuthn:          inheritedEnableWebAuthn,
-		TokenFormat:             org.DefaultTokenFormat,
-		ExpireInHours:           168,
-		RefreshExpireInHours:    168,
-		CookieExpireInHours:     720,
-		FormOffset:              2,
-		Tags:                    []string{"dcr"},
+		Owner:                "admin",
+		Name:                 appName,
+		Organization:         organization,
+		CreatedTime:          createdTime,
+		DisplayName:          req.ClientName,
+		Category:             "Agent",
+		Type:                 "MCP",
+		Scopes:               scopes,
+		Cert:                 inheritedCert,
+		Logo:                 firstNonEmpty(req.LogoUri, inheritedLogo),
+		ThemeData:            inheritedThemeData,
+		FooterHtml:           inheritedFooterHtml,
+		FormCss:              inheritedFormCss,
+		SigninItems:          inheritedSigninItems,
+		HomepageUrl:          req.ClientUri,
+		ClientId:             clientId,
+		ClientSecret:         clientSecret,
+		RedirectUris:         req.RedirectUris,
+		GrantTypes:           req.GrantTypes,
+		EnablePassword:       true,
+		EnableSignUp:         false,
+		DisableSignin:        false,
+		EnableSigninSession:  inheritedEnableSigninSession,
+		EnableCodeSignin:     true,
+		EnableAutoSignin:     inheritedEnableAutoSignin,
+		EnableWebAuthn:       inheritedEnableWebAuthn,
+		TokenFormat:          org.DefaultTokenFormat,
+		ExpireInHours:        168,
+		RefreshExpireInHours: 168,
+		CookieExpireInHours:  720,
+		FormOffset:           2,
+		// Tags restrict which users can sign in; they are not application labels.
+		Tags:                    inheritedTags,
 		TermsOfUse:              req.TosUri,
 		Providers:               inheritedProviders,
 		SigninMethods:           inheritedSigninMethods,
