@@ -77,19 +77,21 @@ type DPoPConfirmation struct {
 }
 
 type IntrospectionResponse struct {
-	Active    bool              `json:"active"`
-	Scope     string            `json:"scope,omitempty"`
-	ClientId  string            `json:"client_id,omitempty"`
-	Username  string            `json:"username,omitempty"`
-	TokenType string            `json:"token_type,omitempty"`
-	Exp       int64             `json:"exp,omitempty"`
-	Iat       int64             `json:"iat,omitempty"`
-	Nbf       int64             `json:"nbf,omitempty"`
-	Sub       string            `json:"sub,omitempty"`
-	Aud       []string          `json:"aud,omitempty"`
-	Iss       string            `json:"iss,omitempty"`
-	Jti       string            `json:"jti,omitempty"`
-	Cnf       *DPoPConfirmation `json:"cnf,omitempty"` // RFC 9449 DPoP key binding
+	ClientOrganization string            `json:"client_organization,omitempty"`
+	ClientDynamicMCP   bool              `json:"client_dynamic_mcp,omitempty"`
+	Active             bool              `json:"active"`
+	Scope              string            `json:"scope,omitempty"`
+	ClientId           string            `json:"client_id,omitempty"`
+	Username           string            `json:"username,omitempty"`
+	TokenType          string            `json:"token_type,omitempty"`
+	Exp                int64             `json:"exp,omitempty"`
+	Iat                int64             `json:"iat,omitempty"`
+	Nbf                int64             `json:"nbf,omitempty"`
+	Sub                string            `json:"sub,omitempty"`
+	Aud                []string          `json:"aud,omitempty"`
+	Iss                string            `json:"iss,omitempty"`
+	Jti                string            `json:"jti,omitempty"`
+	Cnf                *DPoPConfirmation `json:"cnf,omitempty"` // RFC 9449 DPoP key binding
 }
 
 type DeviceAuthCache struct {

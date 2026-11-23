@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -314,4 +315,12 @@ func DeleteDynamicClient(app *Application) *DcrError {
 		return &DcrError{Error: "server_error", ErrorDescription: "failed to delete client"}
 	}
 	return nil
+}
+
+// IsDynamicMCPClient reports whether the current registration permits MCP access.
+// The registration credential is never disclosed to the resource server.
+func (application *Application) IsDynamicMCPClient() bool {
+	return application != nil && application.RegistrationAccessToken != "" &&
+		application.Organization != "" && application.Type == "MCP" &&
+		!application.DisableSignin && slices.Contains(application.GrantTypes, "authorization_code")
 }

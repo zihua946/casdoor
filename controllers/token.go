@@ -633,6 +633,8 @@ func (c *ApiController) IntrospectToken() {
 
 		introspectionResponse.TokenType = token.TokenType
 		introspectionResponse.ClientId = application.ClientId
+		introspectionResponse.ClientOrganization = application.Organization
+		introspectionResponse.ClientDynamicMCP = application.IsDynamicMCPClient()
 
 		// Expose DPoP key binding in the introspection response (RFC 9449 §8).
 		if token.DPoPJkt != "" {
