@@ -3,6 +3,7 @@ WORKDIR /web
 
 # Copy only dependency files first for better caching
 COPY ./web/package.json ./web/yarn.lock ./
+ARG CYPRESS_INSTALL_BINARY=0
 RUN yarn install --frozen-lockfile --network-timeout 1000000
 
 # Copy source files and build
@@ -14,6 +15,7 @@ WORKDIR /go/src/casdoor
 
 # Copy only go.mod and go.sum first for dependency caching
 COPY go.mod go.sum ./
+ARG GOPROXY=https://proxy.golang.org,direct
 RUN go mod download
 
 # Copy source files
