@@ -159,7 +159,7 @@ func GetOidcDiscovery(host string, applicationName string) OidcDiscovery {
 		TokenEndpoint:                          fmt.Sprintf("%s/api/login/oauth/access_token", originBackend),
 		UserinfoEndpoint:                       fmt.Sprintf("%s/api/userinfo", originBackend),
 		DeviceAuthorizationEndpoint:            fmt.Sprintf("%s/api/device-auth", originBackend),
-		RegistrationEndpoint:                   fmt.Sprintf("%s/api/oauth/register?organization=mcp-local", originBackend),
+		RegistrationEndpoint:                   fmt.Sprintf("%s/api/oauth/register", originBackend),
 		JwksUri:                                jwksUri,
 		IntrospectionEndpoint:                  fmt.Sprintf("%s/api/login/oauth/introspect", originBackend),
 		ResponseTypesSupported:                 []string{"code", "token", "id_token", "code token", "code id_token", "token id_token", "code token id_token", "none"},

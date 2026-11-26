@@ -20,13 +20,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDiscoveryRegistrationUsesMCPLocalOrganization(t *testing.T) {
+func TestDiscoveryRegistrationDoesNotHardcodeOrganization(t *testing.T) {
 	for _, origin := range []string{"http://127.0.0.1:8000", "https://login.example.com"} {
 		t.Run(origin, func(t *testing.T) {
 			t.Setenv("origin", origin)
 			t.Setenv("originFrontend", "")
 			discovery := GetOidcDiscovery("ignored.example.com", "")
-			assert.Equal(t, origin+"/api/oauth/register?organization=mcp-local", discovery.RegistrationEndpoint)
+			assert.Equal(t, origin+"/api/oauth/register", discovery.RegistrationEndpoint)
 			assert.Equal(t, origin, discovery.Issuer)
 			assert.Equal(t, origin+"/api/login/oauth/access_token", discovery.TokenEndpoint)
 			assert.Equal(t, origin+"/.well-known/jwks", discovery.JwksUri)
